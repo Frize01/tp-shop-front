@@ -3,6 +3,7 @@ import { createPinia } from 'pinia'
 import './assets/main.css'
 import PrimeVue from 'primevue/config'
 import Aura from '@primeuix/themes/aura'
+import Ripple from 'primevue/ripple'
 
 import App from './App.vue'
 import router from './router'
@@ -16,5 +17,6 @@ app.use(PrimeVue, {
     preset: Aura,
   },
 })
+app.directive('ripple', Ripple)
 
 app.mount('#app')
