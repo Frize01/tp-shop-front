@@ -1,18 +1,10 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import useEruda from './composables/eruda'
+import Btn from 'primevue/button'
 useEruda()
 </script>
 
 <template>
-  <header>
-    <div>
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+  <Btn label="Bonjour" />
 </template>
