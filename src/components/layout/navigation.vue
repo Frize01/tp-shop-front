@@ -1,31 +1,22 @@
 <template>
   <div class="card">
     <Menubar :model="items">
-      <template #item="{ item, props, hasSubmenu, root }">
-        <a v-ripple class="flex items-center" v-bind="props.action">
+      <template #item="{ item, props, hasSubmenu }">
+        <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
+          <a v-ripple :href="href" v-bind="props.action" @click="navigate">
+            <span :class="item.icon" />
+            <span>{{ item.label }}</span>
+          </a>
+        </router-link>
+        <a v-else v-ripple :href="item.url" :target="item.target" v-bind="props.action">
+          <span :class="item.icon" />
           <span>{{ item.label }}</span>
-          <Badge
-            v-if="item.badge"
-            :class="{ 'ml-auto': !root, 'ml-2': root }"
-            :value="item.badge"
-          />
-          <span
-            v-if="item.shortcut"
-            class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1"
-            >{{ item.shortcut }}</span
-          >
-          <i
-            v-if="hasSubmenu"
-            :class="[
-              'pi pi-angle-down ml-auto',
-              { 'pi-angle-down': root, 'pi-angle-right': !root },
-            ]"
-          ></i>
+          <span v-if="hasSubmenu" class="pi pi-fw pi-angle-down" />
         </a>
       </template>
       <template #end>
         <div class="flex items-center gap-2">
-          <InputText placeholder="Search" type="text" class="w-32 sm:w-auto" />
+          <InputText placeholder="Rechercher un produit" type="text" class="w-32 sm:w-auto" />
         </div>
       </template>
     </Menubar>
@@ -34,14 +25,33 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import Menubar from 'primevue/menubar'
-import Badge from 'primevue/badge'
-import InputText from 'primevue/inputtext'
+import { InputText } from 'primevue'
+
+const router = useRouter()
 
 const items = ref([
   {
-    label: 'Home',
-    icon: 'pi pi-home',
+    label: 'Boutique',
+    icon: 'pi pi-shopping-cart',
+    items: [
+      {
+        label: 'Produits',
+        route: '/',
+      },
+      {
+        label: 'Catégories',
+        route: '/',
+      },
+    ],
+  },
+  {
+    label: 'Mon Compte',
+    icon: 'pi pi-user',
+    command: () => {
+      router.push('/vite')
+    },
   },
 ])
 </script>
