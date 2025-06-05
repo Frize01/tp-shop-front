@@ -4,13 +4,13 @@ import axios from 'axios'
  * Configuration de l'instance Axios principale
  */
 const instance = axios.create({
-  baseURL: import.meta.env.VITE_APP_URL_API,
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:54398/',
   timeout: 10000,
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
   },
-  withCredentials: true,
+  withCredentials: false,
 })
 
 /**

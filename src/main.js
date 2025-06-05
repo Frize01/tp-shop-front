@@ -8,7 +8,6 @@ import 'primeicons/primeicons.css'
 
 import App from './App.vue'
 import router from './router'
-import { instance, getCsrfToken, apiService } from '../config/api'
 
 const app = createApp(App)
 
@@ -20,8 +19,5 @@ app.use(PrimeVue, {
   },
 })
 app.directive('ripple', Ripple)
-
-app.config.globalProperties.$api = apiService
-app.config.globalProperties.$getCsrfToken = getCsrfToken
 
 app.mount('#app')

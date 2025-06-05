@@ -1,3 +1,45 @@
+<script setup>
+import { ref } from 'vue'
+import Card from 'primevue/card'
+import Button from 'primevue/button'
+import Rating from 'primevue/rating'
+import Tag from 'primevue/tag'
+import Avatar from 'primevue/avatar'
+import { apiService } from '@/config/api'
+
+// Données des produits en vedette
+const featuredProducts = ref([])
+
+apiService
+  .get('/products')
+  .then((response) => {
+    featuredProducts.value = response.data
+    console.log('Produits récupérés avec succès:', featuredProducts.value)
+  })
+  .catch((error) => {
+    console.error('Erreur lors de la récupération des produits:', error)
+  })
+
+// Avantages client
+const features = ref([
+  {
+    title: 'Livraison gratuite',
+    description: 'Livraison gratuite pour toute commande supérieure à 50€',
+    icon: 'pi pi-truck',
+  },
+  {
+    title: 'Paiement sécurisé',
+    description: 'Vos paiements sont 100% sécurisés',
+    icon: 'pi pi-lock',
+  },
+  {
+    title: 'Assistance 24/7',
+    description: 'Notre équipe est disponible 24h/24 et 7j/7',
+    icon: 'pi pi-comments',
+  },
+])
+</script>
+
 <template>
   <div class="container mx-auto px-4 py-8">
     <!-- Produits en vedette -->
@@ -58,91 +100,3 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { ref } from 'vue'
-import Card from 'primevue/card'
-import Button from 'primevue/button'
-import Badge from 'primevue/badge'
-import Rating from 'primevue/rating'
-import Tag from 'primevue/tag'
-import Avatar from 'primevue/avatar'
-import InputText from 'primevue/inputtext'
-
-// Données des produits en vedette
-const featuredProducts = ref([
-  {
-    id: 1,
-    title: 'Smartphone XYZ Pro',
-    price: 699.99,
-    originalPrice: 799.99,
-    discount: 12,
-    rating: 4,
-    reviews: 124,
-    category: 'Électronique',
-    description:
-      'Le smartphone le plus puissant de notre gamme avec un écran AMOLED 6.7", processeur octa-core et appareil photo 108MP.',
-    image: 'https://placehold.co/400x300/5865F2/FFFFFF?text=Smartphone',
-  },
-  {
-    id: 2,
-    title: 'Écouteurs sans fil',
-    price: 129.99,
-    originalPrice: null,
-    discount: null,
-    rating: 5,
-    reviews: 86,
-    category: 'Électronique',
-    description:
-      'Écouteurs sans fil à réduction de bruit active, autonomie de 30 heures et son immersif de haute qualité.',
-    image: 'https://placehold.co/400x300/5865F2/FFFFFF?text=Écouteurs',
-  },
-  {
-    id: 3,
-    title: 'Montre connectée',
-    price: 199.99,
-    originalPrice: 249.99,
-    discount: 20,
-    rating: 4,
-    reviews: 63,
-    category: 'Électronique',
-    description:
-      'Montre intelligente avec suivi de la santé, notifications, GPS intégré et autonomie de 7 jours.',
-    image: 'https://placehold.co/400x300/5865F2/FFFFFF?text=Montre',
-  },
-  {
-    id: 4,
-    title: 'Laptop Ultra',
-    price: 1299.99,
-    originalPrice: null,
-    discount: null,
-    rating: 5,
-    reviews: 42,
-    category: 'Informatique',
-    description:
-      'Ordinateur portable ultraléger avec processeur dernière génération, 16GB RAM, 512GB SSD et écran haute résolution.',
-    image: 'https://placehold.co/400x300/5865F2/FFFFFF?text=Laptop',
-  },
-])
-
-// Avantages client
-const features = ref([
-  {
-    title: 'Livraison gratuite',
-    description: 'Livraison gratuite pour toute commande supérieure à 50€',
-    icon: 'pi pi-truck',
-  },
-  {
-    title: 'Paiement sécurisé',
-    description: 'Vos paiements sont 100% sécurisés',
-    icon: 'pi pi-lock',
-  },
-  {
-    title: 'Assistance 24/7',
-    description: 'Notre équipe est disponible 24h/24 et 7j/7',
-    icon: 'pi pi-comments',
-  },
-])
-</script>
-
-<style scoped></style>
