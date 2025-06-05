@@ -1,51 +1,5 @@
 <template>
   <div class="container mx-auto px-4 py-8">
-    <!-- Bannière principale -->
-    <Card class="mb-8 p-0 overflow-hidden">
-      <template #content>
-        <div class="relative">
-          <img
-            src="https://placehold.co/1200x400/5865F2/FFFFFF?text=ShopApp"
-            alt="Bannière promotionnelle"
-            class="w-full h-64 object-cover"
-          />
-          <div
-            class="absolute inset-0 flex flex-col justify-center items-start p-8 bg-gradient-to-r from-black/50 to-transparent"
-          >
-            <h1 class="text-4xl font-bold text-white mb-4">Bienvenue sur ShopApp</h1>
-            <p class="text-xl text-white mb-6">
-              Découvrez nos produits exceptionnels à prix imbattables
-            </p>
-            <Button label="Découvrir" icon="pi pi-search" class="p-button-rounded" />
-          </div>
-        </div>
-      </template>
-    </Card>
-
-    <!-- Catégories populaires -->
-    <div class="mb-12">
-      <h2 class="text-2xl font-semibold mb-6">Catégories populaires</h2>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card
-          v-for="(category, index) in categories"
-          :key="index"
-          class="transition-shadow hover:shadow-lg"
-        >
-          <template #header>
-            <div class="h-40 bg-gray-200 relative">
-              <img :src="category.image" :alt="category.name" class="w-full h-full object-cover" />
-            </div>
-          </template>
-          <template #title>
-            <h3 class="font-medium text-lg">{{ category.name }}</h3>
-          </template>
-          <template #content>
-            <Badge :value="category.count + ' produits'" severity="info" />
-          </template>
-        </Card>
-      </div>
-    </div>
-
     <!-- Produits en vedette -->
     <div class="mb-12">
       <h2 class="text-2xl font-semibold mb-6">Produits en vedette</h2>
@@ -57,11 +11,7 @@
         >
           <template #header>
             <div class="relative">
-              <img
-                :src="product.image"
-                :alt="product.name"
-                class="w-full h-48 object-cover"
-              />
+              <img :src="product.image" :alt="product.title" class="w-full h-48 object-cover" />
               <Tag
                 v-if="product.discount"
                 :value="'-' + product.discount + '%'"
@@ -71,7 +21,7 @@
             </div>
           </template>
           <template #title>
-            <h3 class="font-medium">{{ product.name }}</h3>
+            <h3 class="font-medium">{{ product.title }}</h3>
           </template>
           <template #content>
             <div class="flex items-center mt-1">
@@ -106,26 +56,6 @@
         </template>
       </Card>
     </div>
-
-    <!-- Inscription newsletter -->
-    <Card class="bg-primary/10 p-0 mb-4">
-      <template #content>
-        <div class="p-4 text-center">
-          <h2 class="text-2xl font-bold mb-2">Restez informé</h2>
-          <p class="mb-6 text-gray-700">
-            Inscrivez-vous à notre newsletter pour recevoir nos offres exclusives
-          </p>
-          <div class="flex max-w-md mx-auto">
-            <InputText
-              placeholder="Votre adresse email"
-              class="flex-1 p-inputtext-sm"
-              type="email"
-            />
-            <Button label="S'inscrire" class="ml-2" />
-          </div>
-        </div>
-      </template>
-    </Card>
   </div>
 </template>
 
@@ -139,58 +69,58 @@ import Tag from 'primevue/tag'
 import Avatar from 'primevue/avatar'
 import InputText from 'primevue/inputtext'
 
-// Données des catégories
-const categories = ref([
-  {
-    name: 'Électronique',
-    count: 120,
-    image: 'https://placehold.co/400x300/3498db/FFFFFF?text=Électronique',
-  },
-  {
-    name: 'Vêtements',
-    count: 85,
-    image: 'https://placehold.co/400x300/e74c3c/FFFFFF?text=Vêtements',
-  },
-  { name: 'Maison', count: 73, image: 'https://placehold.co/400x300/2ecc71/FFFFFF?text=Maison' },
-  { name: 'Sport', count: 41, image: 'https://placehold.co/400x300/f39c12/FFFFFF?text=Sport' },
-])
-
 // Données des produits en vedette
 const featuredProducts = ref([
   {
-    name: 'Smartphone XYZ Pro',
+    id: 1,
+    title: 'Smartphone XYZ Pro',
     price: 699.99,
     originalPrice: 799.99,
     discount: 12,
     rating: 4,
     reviews: 124,
+    category: 'Électronique',
+    description:
+      'Le smartphone le plus puissant de notre gamme avec un écran AMOLED 6.7", processeur octa-core et appareil photo 108MP.',
     image: 'https://placehold.co/400x300/5865F2/FFFFFF?text=Smartphone',
   },
   {
-    name: 'Écouteurs sans fil',
+    id: 2,
+    title: 'Écouteurs sans fil',
     price: 129.99,
     originalPrice: null,
     discount: null,
     rating: 5,
     reviews: 86,
+    category: 'Électronique',
+    description:
+      'Écouteurs sans fil à réduction de bruit active, autonomie de 30 heures et son immersif de haute qualité.',
     image: 'https://placehold.co/400x300/5865F2/FFFFFF?text=Écouteurs',
   },
   {
-    name: 'Montre connectée',
+    id: 3,
+    title: 'Montre connectée',
     price: 199.99,
     originalPrice: 249.99,
     discount: 20,
     rating: 4,
     reviews: 63,
+    category: 'Électronique',
+    description:
+      'Montre intelligente avec suivi de la santé, notifications, GPS intégré et autonomie de 7 jours.',
     image: 'https://placehold.co/400x300/5865F2/FFFFFF?text=Montre',
   },
   {
-    name: 'Laptop Ultra',
+    id: 4,
+    title: 'Laptop Ultra',
     price: 1299.99,
     originalPrice: null,
     discount: null,
     rating: 5,
     reviews: 42,
+    category: 'Informatique',
+    description:
+      'Ordinateur portable ultraléger avec processeur dernière génération, 16GB RAM, 512GB SSD et écran haute résolution.',
     image: 'https://placehold.co/400x300/5865F2/FFFFFF?text=Laptop',
   },
 ])
@@ -215,28 +145,4 @@ const features = ref([
 ])
 </script>
 
-<style scoped>
-.text-primary {
-  color: var(--primary-color, #5865f2);
-}
-
-.bg-primary {
-  background-color: var(--primary-color, #5865f2);
-}
-
-.bg-primary\/10 {
-  background-color: rgba(var(--primary-color-rgb, 88, 101, 242), 0.1);
-}
-
-.bg-primary\/20 {
-  background-color: rgba(var(--primary-color-rgb, 88, 101, 242), 0.2);
-}
-
-.hover\:bg-primary\/90:hover {
-  background-color: rgba(var(--primary-color-rgb, 88, 101, 242), 0.9);
-}
-
-.focus\:ring-primary\/50:focus {
-  --tw-ring-color: rgba(var(--primary-color-rgb, 88, 101, 242), 0.5);
-}
-</style>
+<style scoped></style>
