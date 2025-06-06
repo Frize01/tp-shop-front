@@ -18,9 +18,9 @@
         <div class="flex items-center gap-2">
           <InputText placeholder="Rechercher un produit" type="text" class="w-32 sm:w-auto" />
           <div v-if="authStore.isAuthenticated" class="flex items-center gap-2">
-            <span class="hidden md:inline-block text-sm"
-              >Bienvenue, {{ authStore.userFullName }}</span
-            >
+            <router-link to="/profile" class="hidden md:inline-block text-sm hover:text-primary">
+              Bienvenue, {{ authStore.userFullName }}
+            </router-link>
             <Button
               icon="pi pi-sign-out"
               text
@@ -48,7 +48,22 @@ const authStore = useAuthStore()
 
 // Utilisez un computed pour mettre à jour les éléments du menu en fonction de l'état d'authentification
 const items = computed(() => {
-  const menuItems = []
+  const menuItems = [
+    {
+      label: 'Boutique',
+      icon: 'pi pi-shopping-cart',
+      items: [
+        {
+          label: 'Produits',
+          route: '/',
+        },
+        {
+          label: 'Catégories',
+          route: '/',
+        },
+      ],
+    },
+  ]
 
   // Si l'utilisateur est connecté, afficher le menu Mon Compte
   if (authStore.isAuthenticated) {
@@ -60,7 +75,7 @@ const items = computed(() => {
           label: 'Profil',
           icon: 'pi pi-id-card',
           command: () => {
-            // Router vers la page de profil
+            router.push('/profile')
           },
         },
         {
