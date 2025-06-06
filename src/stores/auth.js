@@ -201,8 +201,24 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null
 
     try {
+      // Importations dynamiques pour éviter les problèmes de dépendances circulaires
+      const { useCartStore } = await import('./cart')
+      const { useOrdersStore } = await import('./orders')
+
+      const cartStore = useCartStore()
+      const ordersStore = useOrdersStore()
+
+      // Récupérer l'ID de l'utilisateur avant la déconnexion
+      const userId = user.value.id
+
       // Appel à l'API pour supprimer l'utilisateur
-      const response = await apiService.delete(`/users/${user.value.id}`)
+      const response = await apiService.delete(`/users/${userId}`)
+
+      // Supprimer les commandes de l'utilisateur
+      ordersStore.deleteUserOrders(userId)
+
+      // Vider le panier
+      cartStore.clearCart()
 
       // Si la suppression est réussie, on déconnecte l'utilisateur
       logout()

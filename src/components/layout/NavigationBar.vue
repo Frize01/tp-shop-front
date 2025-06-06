@@ -16,12 +16,9 @@
       </template>
       <template #end>
         <div class="flex items-center gap-2">
-          <InputText placeholder="Rechercher un produit" type="text" class="w-32 sm:w-auto" />
+          <!-- <InputText placeholder="Rechercher un produit" type="text" class="w-32 sm:w-auto" /> -->
           <CartIcon @showCart="cartSidebarVisible = true" />
           <div v-if="authStore.isAuthenticated" class="flex items-center gap-2">
-            <router-link to="/profile" class="hidden md:inline-block text-sm hover:text-primary">
-              Bienvenue, {{ authStore.userFullName }}
-            </router-link>
             <Button
               icon="pi pi-sign-out"
               text

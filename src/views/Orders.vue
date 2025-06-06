@@ -56,6 +56,11 @@ function showOrderDetails(order) {
             <span class="font-bold">{{ data.id }}</span>
           </template>
         </Column>
+        <Column field="userId" header="Client" sortable>
+          <template #body="{ data }">
+            {{ authStore.userFullName || 'Vous' }}
+          </template>
+        </Column>
         <Column field="date" header="Date" sortable>
           <template #body="{ data }">
             {{ formatDate(data.date) }}
@@ -112,6 +117,7 @@ function showOrderDetails(order) {
           <div>
             <h3 class="font-bold text-lg">Commande #{{ selectedOrder.id }}</h3>
             <p class="text-gray-600">Passée le {{ formatDate(selectedOrder.date) }}</p>
+            <p class="text-gray-600">Client: {{ authStore.userFullName || 'Vous' }}</p>
           </div>
           <Tag
             :severity="selectedOrder.status === 'validée' ? 'success' : 'warning'"
