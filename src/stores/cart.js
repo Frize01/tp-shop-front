@@ -125,7 +125,13 @@ export const useCartStore = defineStore('cart', () => {
 
   // Finaliser la commande et l'ajouter à l'historique
   function checkout() {
+    // Vérifier que le panier n'est pas vide
     if (isEmpty.value) return false
+
+    // Vérifier que l'utilisateur est connecté
+    if (!authStore.isAuthenticated) {
+      return { error: 'auth_required' }
+    }
 
     const ordersStore = useOrdersStore()
 

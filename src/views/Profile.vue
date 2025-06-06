@@ -78,7 +78,8 @@ const handleLogout = () => {
 // Fonction pour supprimer le compte
 const handleDeleteAccount = () => {
   confirm.require({
-    message: 'Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.',
+    message:
+      'Êtes-vous sûr de vouloir supprimer votre compte ? Cette action supprimera également toutes vos commandes et votre panier actuel. Cette action est irréversible.',
     header: 'Attention',
     icon: 'pi pi-exclamation-circle',
     acceptClass: 'p-button-danger',

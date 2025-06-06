@@ -24,7 +24,17 @@ const updateVisible = (value) => {
 const processCheckout = () => {
   const result = cartStore.checkout()
 
-  if (result) {
+  if (result && result.error === 'auth_required') {
+    toast.add({
+      severity: 'warn',
+      summary: 'Connexion requise',
+      detail: 'Veuillez vous connecter pour finaliser votre commande',
+      life: 3000,
+    })
+
+    updateVisible(false)
+    router.push('/auth')
+  } else if (result) {
     toast.add({
       severity: 'success',
       summary: 'Commande validée',

@@ -47,7 +47,8 @@ apiService
 const features = ref([
   {
     title: 'Livraison gratuite',
-    description: 'Livraison gratuite pour toute commande supérieure à 50€',
+    description:
+      "Livraison gratuite pour toute commande supérieure à 100€ ou si votre prénom est Swann et qu'on es le 6 juin, bon anniversaire au passage !",
     icon: 'pi pi-truck',
   },
   {
@@ -57,7 +58,8 @@ const features = ref([
   },
   {
     title: 'Assistance 24/7',
-    description: 'Notre équipe est indisponible 24h/24 et 7j/7',
+    description:
+      'Notre équipe est disponible 24h/24 et 7j/7. Je pense que la disponibilité de notre équipe vaut quelques points en plus, non ?',
     icon: 'pi pi-comments',
   },
 ])
