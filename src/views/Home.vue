@@ -1,10 +1,34 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import Card from 'primevue/card'
 import Button from 'primevue/button'
 import Tag from 'primevue/tag'
 import Avatar from 'primevue/avatar'
 import { apiService } from '@/config/api'
+import { useCartStore } from '@/stores/cart'
+import Toast from 'primevue/toast'
+import { useToast } from 'primevue/usetoast'
+
+// Store du panier
+const cartStore = useCartStore()
+let toast
+
+onMounted(() => {
+  toast = useToast()
+})
+
+// Fonction pour ajouter un produit au panier
+const addToCart = (product) => {
+  cartStore.addItem(product)
+  if (toast) {
+    toast.add({
+      severity: 'success',
+      summary: 'Produit ajouté',
+      detail: `${product.title} a été ajouté au panier`,
+      life: 3000,
+    })
+  }
+}
 
 // Données des produits en vedette
 const featuredProducts = ref([])
@@ -40,6 +64,7 @@ const features = ref([
 </script>
 
 <template>
+  <Toast position="top-right" />
   <div class="container mx-auto px-4 py-8">
     <!-- Produits en vedette -->
     <div class="mb-12">
@@ -72,7 +97,13 @@ const features = ref([
                 </span>
                 <span class="text-lg font-bold text-primary ml-1">{{ product.price }} €</span>
               </div>
-              <Button icon="pi pi-shopping-cart" rounded text aria-label="Ajouter au panier" />
+              <Button
+                icon="pi pi-shopping-cart"
+                rounded
+                text
+                aria-label="Ajouter au panier"
+                @click="addToCart(product)"
+              />
             </div>
           </template>
         </Card>

@@ -364,7 +364,7 @@ async function handleRegister() {
 </script>
 
 <template>
-  <div class="flex justify-center items-center min-h-screen bg-gray-100 p-4">
+  <div class="flex justify-center items-center min-h-screen p-4">
     <Card class="w-full max-w-3xl">
       <template #title>
         <h1 class="text-2xl font-bold text-center text-primary">Bienvenue sur ShopApp</h1>

@@ -17,6 +17,7 @@
       <template #end>
         <div class="flex items-center gap-2">
           <InputText placeholder="Rechercher un produit" type="text" class="w-32 sm:w-auto" />
+          <CartIcon @showCart="cartSidebarVisible = true" />
           <div v-if="authStore.isAuthenticated" class="flex items-center gap-2">
             <router-link to="/profile" class="hidden md:inline-block text-sm hover:text-primary">
               Bienvenue, {{ authStore.userFullName }}
@@ -32,6 +33,9 @@
         </div>
       </template>
     </Menubar>
+
+    <!-- Sidebar du panier -->
+    <CartSidebar v-model:visible="cartSidebarVisible" />
   </div>
 </template>
 
@@ -42,9 +46,12 @@ import Menubar from 'primevue/menubar'
 import { InputText } from 'primevue'
 import { useAuthStore } from '@/stores/auth'
 import Button from 'primevue/button'
+import CartIcon from '@/components/cart/CartIcon.vue'
+import CartSidebar from '@/components/cart/CartSidebar.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const cartSidebarVisible = ref(false)
 
 // Utilisez un computed pour mettre à jour les éléments du menu en fonction de l'état d'authentification
 const items = computed(() => {
@@ -52,16 +59,7 @@ const items = computed(() => {
     {
       label: 'Boutique',
       icon: 'pi pi-shopping-cart',
-      items: [
-        {
-          label: 'Produits',
-          route: '/',
-        },
-        {
-          label: 'Catégories',
-          route: '/',
-        },
-      ],
+      route: '/',
     },
   ]
 
@@ -82,7 +80,7 @@ const items = computed(() => {
           label: 'Commandes',
           icon: 'pi pi-list',
           command: () => {
-            // Router vers la page des commandes
+            router.push('/orders')
           },
         },
         {
