@@ -6,6 +6,7 @@ import Aura from '@primeuix/themes/aura'
 import Ripple from 'primevue/ripple'
 import 'primeicons/primeicons.css'
 import ConfirmationService from 'primevue/confirmationservice'
+import ToastService from 'primevue/toastservice'
 import App from './App.vue'
 import router from './router'
 import { useAuthStore } from './stores/auth'
@@ -15,6 +16,7 @@ const pinia = createPinia()
 
 app.use(pinia)
 app.use(ConfirmationService)
+app.use(ToastService)
 app.use(router)
 app.use(PrimeVue, {
   theme: {
