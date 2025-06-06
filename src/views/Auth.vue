@@ -82,6 +82,7 @@ const registerFormErrors = reactive({
 // Valide le formulaire de connexion
 function validateLoginForm() {
   let isValid = true
+  const emptyFields = []
 
   // Réinitialisation des erreurs
   loginFormErrors.username = ''
@@ -90,13 +91,23 @@ function validateLoginForm() {
   // Validation du nom d'utilisateur
   if (!loginForm.username.trim()) {
     loginFormErrors.username = "Nom d'utilisateur requis"
+    emptyFields.push('username')
     isValid = false
   }
 
   // Validation du mot de passe
   if (!loginForm.password) {
     loginFormErrors.password = 'Mot de passe requis'
+    emptyFields.push('password')
     isValid = false
+  }
+
+  if (!isValid) {
+    console.log('Validation du formulaire de connexion échouée:', {
+      champManquants: emptyFields,
+      donneesFormulaire: { ...loginForm },
+      erreurs: { ...loginFormErrors },
+    })
   }
 
   return isValid
@@ -105,12 +116,14 @@ function validateLoginForm() {
 // Valide une étape du formulaire d'inscription
 function validateRegistrationStep(step) {
   let isValid = true
+  const emptyFields = []
 
   switch (step) {
     case 0: // Informations de compte
       // Validation de l'email
       if (!registerForm.email.trim()) {
         registerFormErrors.email = 'Email requis'
+        emptyFields.push('email')
         isValid = false
       } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registerForm.email)) {
         registerFormErrors.email = "Format d'email invalide"
@@ -122,6 +135,7 @@ function validateRegistrationStep(step) {
       // Validation du nom d'utilisateur
       if (!registerForm.username.trim()) {
         registerFormErrors.username = "Nom d'utilisateur requis"
+        emptyFields.push('username')
         isValid = false
       } else {
         registerFormErrors.username = ''
@@ -130,6 +144,7 @@ function validateRegistrationStep(step) {
       // Validation du mot de passe
       if (!registerForm.password) {
         registerFormErrors.password = 'Mot de passe requis'
+        emptyFields.push('password')
         isValid = false
       } else if (registerForm.password.length < 6) {
         registerFormErrors.password = 'Le mot de passe doit contenir au moins 6 caractères'
@@ -141,6 +156,7 @@ function validateRegistrationStep(step) {
       // Validation de la confirmation du mot de passe
       if (registerForm.password !== registerForm.passwordConfirm) {
         registerFormErrors.passwordConfirm = 'Les mots de passe ne correspondent pas'
+        emptyFields.push('passwordConfirm')
         isValid = false
       } else {
         registerFormErrors.passwordConfirm = ''
@@ -151,6 +167,7 @@ function validateRegistrationStep(step) {
       // Validation du prénom
       if (!registerForm.firstname.trim()) {
         registerFormErrors.firstname = 'Prénom requis'
+        emptyFields.push('firstname')
         isValid = false
       } else {
         registerFormErrors.firstname = ''
@@ -159,6 +176,7 @@ function validateRegistrationStep(step) {
       // Validation du nom
       if (!registerForm.lastname.trim()) {
         registerFormErrors.lastname = 'Nom requis'
+        emptyFields.push('lastname')
         isValid = false
       } else {
         registerFormErrors.lastname = ''
@@ -167,6 +185,7 @@ function validateRegistrationStep(step) {
       // Validation du téléphone
       if (!registerForm.phone.trim()) {
         registerFormErrors.phone = 'Numéro de téléphone requis'
+        emptyFields.push('phone')
         isValid = false
       } else {
         registerFormErrors.phone = ''
@@ -177,6 +196,7 @@ function validateRegistrationStep(step) {
       // Validation de la rue
       if (!registerForm.address.street.trim()) {
         registerFormErrors.street = 'Rue requise'
+        emptyFields.push('address.street')
         isValid = false
       } else {
         registerFormErrors.street = ''
@@ -185,6 +205,7 @@ function validateRegistrationStep(step) {
       // Validation de la ville
       if (!registerForm.address.city.trim()) {
         registerFormErrors.city = 'Ville requise'
+        emptyFields.push('address.city')
         isValid = false
       } else {
         registerFormErrors.city = ''
@@ -193,6 +214,7 @@ function validateRegistrationStep(step) {
       // Validation du numéro
       if (!registerForm.number) {
         registerFormErrors.number = 'Numéro requis'
+        emptyFields.push('number')
         isValid = false
       } else {
         registerFormErrors.number = ''
@@ -201,11 +223,21 @@ function validateRegistrationStep(step) {
       // Validation du code postal
       if (!registerForm.zipcode.trim()) {
         registerFormErrors.zipcode = 'Code postal requis'
+        emptyFields.push('zipcode')
         isValid = false
       } else {
         registerFormErrors.zipcode = ''
       }
       break
+  }
+
+  if (!isValid) {
+    console.log(`Validation de l'étape ${step} du formulaire d'inscription échouée:`, {
+      étape: step,
+      champManquants: emptyFields,
+      donnéesFormulaire: JSON.parse(JSON.stringify(registerForm)),
+      erreurs: { ...registerFormErrors },
+    })
   }
 
   return isValid
@@ -225,10 +257,19 @@ async function handleLogin() {
     } else {
       formError.value =
         authStore.error || 'Échec de la connexion. Veuillez vérifier vos identifiants.'
+      console.error('Échec de connexion:', {
+        error: authStore.error,
+        credentials: { username: loginForm.username, passwordLength: loginForm.password.length },
+      })
     }
   } catch (error) {
     formError.value = "Une erreur s'est produite lors de la connexion."
-    console.error('Erreur de connexion:', error)
+    console.error('Erreur de connexion détaillée:', {
+      message: error.message,
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      stack: error.stack,
+    })
   } finally {
     formSubmitting.value = false
   }
@@ -251,6 +292,10 @@ async function handleRegister() {
   for (let step = 0; step < 3; step++) {
     if (!validateRegistrationStep(step)) {
       registrationStep.value = step
+      console.error(`Validation échouée à l'étape ${step} de l'inscription`, {
+        currentStep: step,
+        formState: JSON.parse(JSON.stringify(registerForm)),
+      })
       return
     }
   }
@@ -281,6 +326,7 @@ async function handleRegister() {
       },
     }
 
+    console.log("Tentative d'inscription avec les données:", JSON.stringify(userData, null, 2))
     await authStore.register(userData)
 
     // Après l'inscription réussie, tentative de connexion
@@ -296,8 +342,21 @@ async function handleRegister() {
       formError.value = 'Inscription réussie ! Veuillez vous connecter.'
     }
   } catch (error) {
-    formError.value = authStore.error || "Une erreur s'est produite lors de l'inscription."
-    console.error("Erreur d'inscription:", error)
+    console.error("Erreur détaillée d'inscription:", {
+      message: error.message,
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      responseData: error.response?.data,
+      stack: error.stack,
+    })
+
+    // Message d'erreur spécifique pour l'erreur 400
+    if (error.response?.status === 400) {
+      formError.value =
+        'Format de données incorrect. Vérifiez que tous les champs sont correctement remplis.'
+    } else {
+      formError.value = authStore.error || "Une erreur s'est produite lors de l'inscription."
+    }
   } finally {
     formSubmitting.value = false
   }

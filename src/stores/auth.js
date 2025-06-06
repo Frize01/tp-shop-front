@@ -90,10 +90,49 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null
 
     try {
-      const response = await apiService.post('/users', userData)
+      console.log("Données d'inscription reçues:", JSON.stringify(userData, null, 2))
+
+      // Formatage des données selon le modèle attendu par l'API
+      const formattedData = {
+        email: userData.email,
+        username: userData.username,
+        password: userData.password,
+        // Déplacer firstname et lastname au premier niveau
+        firstname: userData.name.firstname,
+        lastname: userData.name.lastname,
+        // L'adresse selon le format de l'API
+        address: {
+          city: userData.address.city,
+          street: userData.address.street,
+          geolocation: {
+            lat: userData.address.geolocation.lat || '0',
+            long: userData.address.geolocation.long || '0',
+          },
+        },
+        // Ces champs sont au premier niveau dans l'API
+        number: userData.address.number,
+        zipcode: userData.address.zipcode,
+        phone: userData.phone,
+      }
+
+      console.log("Données formatées envoyées à l'API:", JSON.stringify(formattedData, null, 2))
+      const response = await apiService.post('/users', formattedData)
+      console.log("Réponse d'inscription réussie:", response.data)
       return response.data
     } catch (err) {
-      error.value = err.response?.data?.message || "Erreur lors de l'inscription"
+      console.error("Erreur d'inscription détaillée:", {
+        message: err.message,
+        status: err.response?.status,
+        statusText: err.response?.statusText,
+        responseData: err.response?.data,
+        requestData: userData,
+      })
+
+      error.value =
+        err.response?.data?.message ||
+        (err.response?.status === 400
+          ? 'Format de données incorrect'
+          : "Erreur lors de l'inscription")
       throw err
     } finally {
       loading.value = false
@@ -151,6 +190,32 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('temp_credentials')
   }
 
+  // Fonction pour supprimer un compte utilisateur
+  async function deleteAccount() {
+    if (!user.value || !user.value.id) {
+      error.value = 'Impossible de supprimer le compte : utilisateur non connecté'
+      return false
+    }
+
+    loading.value = true
+    error.value = null
+
+    try {
+      // Appel à l'API pour supprimer l'utilisateur
+      const response = await apiService.delete(`/users/${user.value.id}`)
+
+      // Si la suppression est réussie, on déconnecte l'utilisateur
+      logout()
+      return true
+    } catch (err) {
+      console.error('Erreur lors de la suppression du compte:', err)
+      error.value = 'Erreur lors de la suppression du compte'
+      return false
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     // État
     user,
@@ -168,5 +233,6 @@ export const useAuthStore = defineStore('auth', () => {
     register,
     fetchUserProfile,
     logout,
+    deleteAccount,
   }
 })
