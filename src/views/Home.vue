@@ -28,12 +28,12 @@ const features = ref([
   },
   {
     title: 'Paiement sécurisé',
-    description: 'Vos paiements sont 100% sécurisés',
+    description: 'Vos paiements sont 100% pas sécurisés',
     icon: 'pi pi-lock',
   },
   {
     title: 'Assistance 24/7',
-    description: 'Notre équipe est disponible 24h/24 et 7j/7',
+    description: 'Notre équipe est indisponible 24h/24 et 7j/7',
     icon: 'pi pi-comments',
   },
 ])

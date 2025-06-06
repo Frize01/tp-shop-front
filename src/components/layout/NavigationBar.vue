@@ -17,6 +17,18 @@
       <template #end>
         <div class="flex items-center gap-2">
           <InputText placeholder="Rechercher un produit" type="text" class="w-32 sm:w-auto" />
+          <div v-if="authStore.isAuthenticated" class="flex items-center gap-2">
+            <span class="hidden md:inline-block text-sm"
+              >Bienvenue, {{ authStore.userFullName }}</span
+            >
+            <Button
+              icon="pi pi-sign-out"
+              text
+              rounded
+              aria-label="Déconnexion"
+              @click="authStore.logout()"
+            />
+          </div>
         </div>
       </template>
     </Menubar>
@@ -24,34 +36,61 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import Menubar from 'primevue/menubar'
 import { InputText } from 'primevue'
+import { useAuthStore } from '@/stores/auth'
+import Button from 'primevue/button'
 
 const router = useRouter()
+const authStore = useAuthStore()
 
-const items = ref([
-  {
-    label: 'Boutique',
-    icon: 'pi pi-shopping-cart',
-    items: [
-      {
-        label: 'Produits',
-        route: '/',
+// Utilisez un computed pour mettre à jour les éléments du menu en fonction de l'état d'authentification
+const items = computed(() => {
+  const menuItems = []
+
+  // Si l'utilisateur est connecté, afficher le menu Mon Compte
+  if (authStore.isAuthenticated) {
+    menuItems.push({
+      label: 'Mon Compte',
+      icon: 'pi pi-user',
+      items: [
+        {
+          label: 'Profil',
+          icon: 'pi pi-id-card',
+          command: () => {
+            // Router vers la page de profil
+          },
+        },
+        {
+          label: 'Commandes',
+          icon: 'pi pi-list',
+          command: () => {
+            // Router vers la page des commandes
+          },
+        },
+        {
+          label: 'Déconnexion',
+          icon: 'pi pi-sign-out',
+          command: () => {
+            authStore.logout()
+            router.push('/')
+          },
+        },
+      ],
+    })
+  } else {
+    // Si l'utilisateur n'est pas connecté, afficher le lien vers la page d'authentification
+    menuItems.push({
+      label: 'Connexion / Inscription',
+      icon: 'pi pi-sign-in',
+      command: () => {
+        router.push('/auth')
       },
-      {
-        label: 'Catégories',
-        route: '/',
-      },
-    ],
-  },
-  {
-    label: 'Mon Compte',
-    icon: 'pi pi-user',
-    command: () => {
-      router.push('/vite')
-    },
-  },
-])
+    })
+  }
+
+  return menuItems
+})
 </script>
