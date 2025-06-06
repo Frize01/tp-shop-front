@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import Card from 'primevue/card'
 import Button from 'primevue/button'
-import Rating from 'primevue/rating'
 import Tag from 'primevue/tag'
 import Avatar from 'primevue/avatar'
 import { apiService } from '@/config/api'
@@ -66,10 +65,6 @@ const features = ref([
             <h3 class="font-medium">{{ product.title }}</h3>
           </template>
           <template #content>
-            <div class="flex items-center mt-1">
-              <Rating :modelValue="product.rating" :readonly="true" :cancel="false" />
-              <span class="text-xs text-gray-500 ml-1">({{ product.reviews }})</span>
-            </div>
             <div class="mt-2 flex items-center justify-between">
               <div>
                 <span v-if="product.discount" class="text-gray-500 line-through text-sm">
