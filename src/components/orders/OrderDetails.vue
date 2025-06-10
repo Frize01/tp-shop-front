@@ -3,7 +3,6 @@ import { defineProps, defineEmits, computed, ref, watch } from 'vue'
 import Dialog from 'primevue/dialog'
 import Divider from 'primevue/divider'
 import Tag from 'primevue/tag'
-import ProgressBar from 'primevue/progressbar'
 import Button from 'primevue/button'
 import { useOrdersStore } from '@/stores/orders'
 import toastService from '@/services/toast'
@@ -47,7 +46,7 @@ watch(dialogVisible, (newValue) => {
 // Fermer la modal
 function closeDialog() {
   console.log('Fermeture de la modale de détails de commande')
-  dialogVisible.value = false // Utiliser notre variable locale
+  dialogVisible.value = false
 }
 
 // Cette fonction est appelée quand la modale est cachée
@@ -141,34 +140,6 @@ const safeOrder = computed(() => {
     })
   }
 
-  // Si on n'a pas trouvé de produits valides, créer des produits factices
-  if (normalizedProducts.length === 0) {
-    const today = new Date()
-    const orderDate = new Date(props.order.date)
-
-    // Créer des produits factices si la date correspond à aujourd'hui (10 juin 2025)
-    if (
-      orderDate.getDate() === today.getDate() &&
-      orderDate.getMonth() === today.getMonth() &&
-      orderDate.getFullYear() === today.getFullYear()
-    ) {
-      normalizedProducts = [
-        {
-          product: {
-            id: 'mock1',
-            title: 'Smartphone Galaxy Z20',
-            price: 899.99,
-            image: 'https://via.placeholder.com/150',
-          },
-          quantity: 1,
-        },
-      ]
-    }
-  }
-
-  // Débug: afficher la structure des données pour comprendre le problème
-  console.log('Structure des produits de la commande:', JSON.stringify(normalizedProducts, null, 2))
-
   return {
     ...props.order,
     products: normalizedProducts,
@@ -178,50 +149,6 @@ const safeOrder = computed(() => {
     total: props.order.total !== undefined ? props.order.total : 0,
   }
 })
-
-// Valeur de progression selon le statut de la commande
-const orderProgress = computed(() => {
-  switch (safeOrder.value.status) {
-    case 'processing':
-      return 25
-    case 'shipped':
-      return 60
-    case 'completed':
-      return 100
-    case 'cancelled':
-      return 0
-    default:
-      return 0
-  }
-})
-
-// Style de la barre de progression selon le statut
-const progressBarStyle = computed(() => {
-  if (safeOrder.value.status === 'cancelled') {
-    return {
-      background: 'var(--red-500)',
-      height: '0.5rem',
-    }
-  }
-  return { height: '0.5rem' }
-})
-
-// Classes CSS pour les étapes du statut
-const getStepClass = (stepStatus) => {
-  const statusOrder = ['processing', 'shipped', 'completed']
-  const currentIndex = statusOrder.indexOf(safeOrder.value.status)
-  const stepIndex = statusOrder.indexOf(stepStatus)
-
-  if (safeOrder.value.status === 'cancelled') {
-    return 'text-red-500 font-normal'
-  }
-
-  if (stepIndex <= currentIndex) {
-    return 'text-primary font-bold'
-  }
-
-  return 'text-gray-400 font-normal'
-}
 
 // Formater la date
 function formatDate(date) {
@@ -285,95 +212,6 @@ function updateStatus(newStatus) {
 const canCancel = computed(() => {
   return safeOrder.value.status === 'processing'
 })
-
-// Liste de produits factices pour les cas où les données manquent
-const mockProducts = [
-  {
-    id: 1,
-    title: 'Smartphone Galaxy Z20',
-    price: 899.99,
-    image: 'https://via.placeholder.com/150',
-    category: 'electronics',
-  },
-  {
-    id: 2,
-    title: 'Casque audio sans fil Pro',
-    price: 249.99,
-    image: 'https://via.placeholder.com/150',
-    category: 'electronics',
-  },
-  {
-    id: 3,
-    title: 'Chaussures de sport Air Max',
-    price: 129.99,
-    image: 'https://via.placeholder.com/150',
-    category: 'clothing',
-  },
-  {
-    id: 4,
-    title: 'Livre "Le Guide du développeur"',
-    price: 39.99,
-    image: 'https://via.placeholder.com/150',
-    category: 'books',
-  },
-]
-
-// Générer des données factices si aucun produit n'est disponible
-function generateMockData() {
-  if (!safeOrder.value.products || safeOrder.value.products.length === 0) {
-    const numberOfProducts = Math.floor(Math.random() * 3) + 1
-    const mockItems = []
-
-    for (let i = 0; i < numberOfProducts; i++) {
-      const randomIndex = Math.floor(Math.random() * mockProducts.length)
-      mockItems.push({
-        product: mockProducts[randomIndex],
-        quantity: Math.floor(Math.random() * 2) + 1,
-      })
-    }
-
-    console.log('Données factices générées:', mockItems)
-    safeOrder.value.products = mockItems
-  }
-}
-
-// Fonction pour recréer toutes les commandes avec la structure correcte
-function fixAllOrders() {
-  const ordersArray = ordersStore.orders
-  const fixedOrders = ordersArray.map((order) => {
-    // Si la commande a déjà des produits correctement formatés, ne rien faire
-    if (
-      order.products &&
-      order.products.length > 0 &&
-      order.products[0].product &&
-      order.products[0].product.title
-    ) {
-      return order
-    }
-
-    // Créer des produits factices
-    const numProducts = Math.floor(Math.random() * 3) + 1
-    const products = []
-
-    for (let i = 0; i < numProducts; i++) {
-      const randomIndex = Math.floor(Math.random() * mockProducts.length)
-      products.push({
-        product: mockProducts[randomIndex],
-        quantity: Math.floor(Math.random() * 2) + 1,
-      })
-    }
-
-    // Retourner la commande mise à jour
-    return {
-      ...order,
-      products: products,
-    }
-  })
-
-  // Mettre à jour le localStorage
-  localStorage.setItem('orders', JSON.stringify(fixedOrders))
-  toastService.success('Toutes les commandes ont été réparées. Rafraîchissez la page.')
-}
 
 // Fonctions pour gérer différentes structures de données des produits
 function getProductImage(item) {
@@ -445,12 +283,12 @@ function getProductTotal(item) {
     :style="{ width: '90vw', maxWidth: '550px' }"
     :draggable="false"
     :closable="true"
+    :dismissableMask="true"
     @hide="onDialogHide"
     position="top"
     :breakpoints="{ '960px': '75vw', '640px': '90vw' }"
     :showHeader="true"
   >
-    <!-- Ajout d'un badge pour indiquer la date du jour simulée -->
     <template #header>
       <div class="flex justify-between items-center w-full">
         <span>Détails de la commande</span>
@@ -485,11 +323,7 @@ function getProductTotal(item) {
       <div class="mb-4">
         <h4 class="font-semibold mb-3">Articles commandés</h4>
         <ul class="space-y-4">
-          <li
-            v-for="(item, index) in safeOrder.products"
-            :key="index"
-            class="flex gap-3 border-b pb-3"
-          >
+          <li v-for="(item, index) in safeOrder.products" :key="index" class="flex gap-3 pb-3">
             <img
               :src="getProductImage(item)"
               :alt="getProductTitle(item)"
