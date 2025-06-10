@@ -8,6 +8,7 @@ import Button from 'primevue/button'
 import { useOrdersStore } from '@/stores/orders'
 import toastService from '@/services/toast'
 import { useAddress } from '@/composables/useAddress'
+import DebugData from '../developpement/DebugData.vue'
 
 const ordersStore = useOrdersStore()
 const { formatAddress } = useAddress()
@@ -553,37 +554,7 @@ function getProductTotal(item) {
           />
         </div>
       </div>
-
-      <!-- Débogage - À supprimer en production -->
-      <div class="mt-4">
-        <Divider />
-        <div class="text-xs text-gray-500 mt-2">
-          <details>
-            <summary>Info de débogage</summary>
-            <pre class="text-xs overflow-auto max-h-40 p-2 bg-gray-100 rounded">{{
-              JSON.stringify(safeOrder, null, 2)
-            }}</pre>
-            <div class="flex gap-2 mt-2">
-              <Button
-                label="Générer données de test"
-                icon="pi pi-refresh"
-                size="small"
-                @click="generateMockData"
-                severity="help"
-                text
-              />
-              <Button
-                label="Réparer toutes les commandes"
-                icon="pi pi-wrench"
-                size="small"
-                @click="fixAllOrders"
-                severity="warning"
-                text
-              />
-            </div>
-          </details>
-        </div>
-      </div>
+      <DebugData :data="safeOrder" title="Info de débogage de commande" :defaultClosed="true" />
     </div>
   </Dialog>
 </template>
