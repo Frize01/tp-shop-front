@@ -75,7 +75,12 @@ export const useOrdersStore = defineStore('orders', () => {
       id: generateOrderId(),
       userId: authStore.user.id,
       products: cartItems.map((item) => ({
-        product: item.product,
+        product: {
+          id: item.id,
+          title: item.title,
+          price: item.price,
+          image: item.image,
+        },
         quantity: item.quantity,
       })),
       subtotal,
