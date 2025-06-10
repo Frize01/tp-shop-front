@@ -119,14 +119,17 @@ async function handleLogin() {
 
     <div class="field">
       <label for="password" class="block mb-1">Mot de passe</label>
-      <Password
-        id="password"
-        v-model="loginForm.password"
-        toggleMask
-        class="w-full"
-        :feedback="false"
-        :class="{ 'p-invalid': loginFormErrors.password }"
-      />
+      <div class="w-full">
+        <Password
+          id="password"
+          v-model="loginForm.password"
+          toggleMask
+          inputClass="w-full"
+          class="w-full"
+          :feedback="false"
+          :class="{ 'p-invalid': loginFormErrors.password }"
+        />
+      </div>
       <small class="text-red-500" v-if="loginFormErrors.password">
         {{ loginFormErrors.password }}
       </small>

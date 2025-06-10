@@ -268,13 +268,16 @@ async function handleRegister() {
 
       <div class="field">
         <label for="register-password" class="block mb-1">Mot de passe</label>
-        <Password
-          id="register-password"
-          v-model="registerForm.password"
-          toggleMask
-          class="w-full"
-          :class="{ 'p-invalid': registerFormErrors.password }"
-        />
+        <div class="w-full">
+          <Password
+            id="register-password"
+            v-model="registerForm.password"
+            toggleMask
+            inputClass="w-full"
+            class="w-full"
+            :class="{ 'p-invalid': registerFormErrors.password }"
+          />
+        </div>
         <small class="text-red-500" v-if="registerFormErrors.password">
           {{ registerFormErrors.password }}
         </small>
@@ -282,14 +285,17 @@ async function handleRegister() {
 
       <div class="field">
         <label for="password-confirm" class="block mb-1">Confirmer le mot de passe</label>
-        <Password
-          id="password-confirm"
-          v-model="registerForm.passwordConfirm"
-          toggleMask
-          class="w-full"
-          :feedback="false"
-          :class="{ 'p-invalid': registerFormErrors.passwordConfirm }"
-        />
+        <div class="w-full">
+          <Password
+            id="password-confirm"
+            v-model="registerForm.passwordConfirm"
+            toggleMask
+            inputClass="w-full"
+            class="w-full"
+            :feedback="false"
+            :class="{ 'p-invalid': registerFormErrors.passwordConfirm }"
+          />
+        </div>
         <small class="text-red-500" v-if="registerFormErrors.passwordConfirm">
           {{ registerFormErrors.passwordConfirm }}
         </small>

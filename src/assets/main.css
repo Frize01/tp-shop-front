@@ -1,1 +1,15 @@
 @import "tailwindcss";
+
+/* Styles personnalisés pour les composants PrimeVue */
+.p-password {
+    width: 100%;
+    display: block;
+}
+
+.p-password input {
+    width: 100%;
+}
+
+.p-inputtext {
+    width: 100%;
+}
