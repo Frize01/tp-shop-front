@@ -48,6 +48,18 @@ onUnmounted(() => {
 })
 </script>
 
-<style scoped>
-/* Styles pour les toasts si nécessaire */
+<style>
+/* Styles pour les toasts responsifs */
+@media screen and (max-width: 768px) {
+  .p-toast {
+    width: 95vw !important;
+    right: 2.5vw !important;
+    left: 2.5vw !important;
+  }
+
+  .p-toast .p-toast-message {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+}
 </style>
