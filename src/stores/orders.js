@@ -7,25 +7,51 @@ export const useOrdersStore = defineStore('orders', () => {
   const orders = ref([])
 
   // Référence au store d'authentification
-  const authStore = useAuthStore() // Chargement initial depuis localStorage et migration des données si nécessaire
+  const authStore = useAuthStore()
+
+  // Chargement initial depuis localStorage et migration des données si nécessaire
   const initializeOrders = () => {
     const savedOrders = localStorage.getItem('orders')
     if (savedOrders) {
-      // Charger les commandes
-      const parsedOrders = JSON.parse(savedOrders)
+      try {
+        // Charger les commandes
+        const parsedOrders = JSON.parse(savedOrders)
 
-      // Nettoyer les données obsolètes (supprimer le champ username)
-      const cleanedOrders = parsedOrders.map((order) => {
-        // Créer une copie de la commande sans le champ username
-        const { username, ...cleanOrder } = order
-        return cleanOrder
-      })
+        // Nettoyer et normaliser les données
+        const normalizedOrders = parsedOrders.map((order) => {
+          // Enlever les champs obsolètes
+          const { username, ...cleanOrder } = order
 
-      // Mettre à jour l'état
-      orders.value = cleanedOrders
+          // Normaliser la structure pour assurer la compatibilité
+          return {
+            id: cleanOrder.id || generateOrderId(),
+            userId: cleanOrder.userId,
+            products: cleanOrder.products || cleanOrder.items || [],
+            subtotal: cleanOrder.subtotal !== undefined ? cleanOrder.subtotal : 0,
+            shipping: cleanOrder.shipping !== undefined ? cleanOrder.shipping : 0,
+            tax: cleanOrder.tax !== undefined ? cleanOrder.tax : (cleanOrder.subtotal || 0) * 0.2,
+            total: cleanOrder.total !== undefined ? cleanOrder.total : 0,
+            status: cleanOrder.status || 'processing',
+            date: cleanOrder.date || new Date().toISOString(),
+            shippingAddress: cleanOrder.shippingAddress || null,
+          }
+        })
 
-      // Sauvegarder les commandes nettoyées
-      saveOrders()
+        // Mettre à jour l'état
+        orders.value = normalizedOrders
+
+        // Sauvegarder les commandes normalisées
+        saveOrders()
+
+        console.log(
+          'Données de commandes normalisées et chargées:',
+          normalizedOrders.length,
+          'commandes',
+        )
+      } catch (error) {
+        console.error('Erreur lors du chargement des commandes:', error)
+        orders.value = []
+      }
     }
   }
 
@@ -42,18 +68,30 @@ export const useOrdersStore = defineStore('orders', () => {
   })
 
   // Ajouter une nouvelle commande
-  function addOrder(cartItems, subtotal, shipping, total) {
+  function addOrder(cartItems, subtotal, shipping, total, status = 'processing', orderDate = null) {
     if (!authStore.isAuthenticated || !authStore.user) return false
 
     const newOrder = {
       id: generateOrderId(),
-      userId: authStore.user.id, // On garde uniquement l'ID utilisateur qui est unique
-      items: [...cartItems],
+      userId: authStore.user.id,
+      products: cartItems.map((item) => ({
+        product: item.product,
+        quantity: item.quantity,
+      })),
       subtotal,
       shipping,
+      tax: total * 0.2, // Estimation de la TVA à 20%
       total,
-      status: 'validée',
-      date: new Date().toISOString(),
+      status: status,
+      date: orderDate || new Date().toISOString(),
+      shippingAddress: authStore.user.address
+        ? {
+            street: authStore.user.address.street || '',
+            number: authStore.user.address.number || '',
+            city: authStore.user.address.city || '',
+            zipcode: authStore.user.address.zipcode || '',
+          }
+        : null,
     }
 
     orders.value.push(newOrder)
@@ -85,10 +123,28 @@ export const useOrdersStore = defineStore('orders', () => {
     return true
   }
 
+  // Mettre à jour le statut d'une commande
+  function updateOrderStatus(orderId, newStatus) {
+    if (!orderId || !newStatus) return false
+
+    // Chercher la commande
+    const orderIndex = orders.value.findIndex((order) => order.id === orderId)
+    if (orderIndex === -1) return false
+
+    // Mettre à jour le statut
+    orders.value[orderIndex].status = newStatus
+
+    // Sauvegarder les modifications
+    saveOrders()
+
+    return true
+  }
+
   return {
     orders,
     userOrders,
     addOrder,
     deleteUserOrders,
+    updateOrderStatus,
   }
 })

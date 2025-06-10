@@ -57,7 +57,7 @@ const processCheckout = () => {
 
 <template>
   <Drawer
-    v-model:visible="props.visible"
+    :visible="props.visible"
     position="right"
     :style="{ width: 'auto' }"
     @update:visible="updateVisible"

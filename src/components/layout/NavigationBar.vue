@@ -32,7 +32,7 @@
     </Menubar>
 
     <!-- Sidebar du panier -->
-    <CartSidebar v-model:visible="cartSidebarVisible" />
+    <CartSidebar :visible="cartSidebarVisible" @update:visible="cartSidebarVisible = $event" />
   </div>
 </template>
 

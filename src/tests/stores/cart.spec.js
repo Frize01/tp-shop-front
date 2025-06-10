@@ -33,7 +33,7 @@ vi.mock('@/stores/orders', () => ({
   })),
 }))
 
-describe('Cart Store', () => {
+describe('Magasin du Panier', () => {
   // Mock localStorage
   const localStorageMock = {
     getItem: vi.fn(),
