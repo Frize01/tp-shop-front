@@ -7,8 +7,10 @@ import ProgressBar from 'primevue/progressbar'
 import Button from 'primevue/button'
 import { useOrdersStore } from '@/stores/orders'
 import toastService from '@/services/toast'
+import { useAddress } from '@/composables/useAddress'
 
 const ordersStore = useOrdersStore()
+const { formatAddress } = useAddress()
 
 const props = defineProps({
   order: {
@@ -451,9 +453,6 @@ function getProductTotal(item) {
     <template #header>
       <div class="flex justify-between items-center w-full">
         <span>Détails de la commande</span>
-        <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-          Date simulée: 10/06/2025
-        </span>
       </div>
     </template>
 
@@ -469,16 +468,6 @@ function getProductTotal(item) {
           :severity="getOrderStatusSeverity(safeOrder.status)"
           size="large"
         />
-      </div>
-
-      <!-- Barre de progression du statut -->
-      <div class="mb-4" v-if="safeOrder.status !== 'cancelled'">
-        <ProgressBar :value="orderProgress" :style="progressBarStyle" />
-        <div class="flex justify-between mt-2">
-          <span :class="getStepClass('processing')">En traitement</span>
-          <span :class="getStepClass('shipped')">Expédiée</span>
-          <span :class="getStepClass('completed')">Livrée</span>
-        </div>
       </div>
 
       <!-- Message si commande annulée -->
@@ -548,14 +537,7 @@ function getProductTotal(item) {
       <!-- Adresse de livraison -->
       <div v-if="safeOrder.shippingAddress">
         <h4 class="font-medium mb-2">Adresse de livraison</h4>
-        <p>
-          {{ safeOrder.shippingAddress.street }},
-          <span v-if="safeOrder.shippingAddress.number"
-            >n° {{ safeOrder.shippingAddress.number }},</span
-          >
-          <br />
-          {{ safeOrder.shippingAddress.zipcode }} {{ safeOrder.shippingAddress.city }}
-        </p>
+        <p v-html="formatAddress(safeOrder.shippingAddress, { html: true })"></p>
       </div>
 
       <!-- Actions sur la commande -->

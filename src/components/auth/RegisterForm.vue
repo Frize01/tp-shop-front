@@ -6,6 +6,7 @@ import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import Button from 'primevue/button'
 import Message from 'primevue/message'
+import { useAddress } from '@/composables/useAddress'
 
 const props = defineProps({
   formSubmitting: {
@@ -28,6 +29,7 @@ const emit = defineEmits([
 const router = useRouter()
 const authStore = useAuthStore()
 const registrationStep = ref(0)
+const { formatAddress } = useAddress()
 
 // Étapes du formulaire d'inscription
 const registrationSteps = [
@@ -425,11 +427,15 @@ async function handleRegister() {
       <div class="bg-gray-50 p-4 rounded">
         <h4 class="font-medium mb-2">Adresse</h4>
         <p>
-          <strong>Rue:</strong> {{ registerForm.address.street }}
-          <span v-if="registerForm.number">, n° {{ registerForm.number }}</span>
+          {{
+            formatAddress({
+              street: registerForm.address.street,
+              number: registerForm.number,
+              city: registerForm.address.city,
+              zipcode: registerForm.zipcode,
+            })
+          }}
         </p>
-        <p><strong>Ville:</strong> {{ registerForm.address.city }}</p>
-        <p><strong>Code postal:</strong> {{ registerForm.zipcode }}</p>
       </div>
 
       <Message
