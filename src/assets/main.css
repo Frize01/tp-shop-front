@@ -1,1 +1,27 @@
 @import "tailwindcss";
+
+/* Styles personnalisés pour les composants PrimeVue */
+.p-password {
+  width: 100%;
+  display: block;
+}
+
+.p-password input {
+  width: 100%;
+}
+
+.p-inputtext {
+  width: 100%;
+}
+
+/* Styles responsifs pour les notifications toast */
+@media screen and (max-width: 768px) {
+  .p-toast {
+    width: 95vw !important;
+    max-width: 95vw !important;
+  }
+
+  .p-toast-message-content {
+    flex-wrap: wrap;
+  }
+}
