@@ -64,6 +64,7 @@ apiService
         </template>
         <template #title>
           <h3 class="font-medium">{{ product.title }}</h3>
+          <p class="text-sm">{{ product.description }}</p>
         </template>
         <template #content>
           <div class="mt-2 flex items-center justify-between">
